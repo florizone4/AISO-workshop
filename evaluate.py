@@ -8,6 +8,7 @@ import datetime
 import json
 import os
 import pathlib
+import shutil
 import time
 
 import dotenv
@@ -20,6 +21,12 @@ from utils import server
 
 # Initialize colorama for cross-platform color support
 init(autoreset=True)
+
+
+def _term_width() -> int:
+    """Return current terminal column width, with an 80-column fallback."""
+    return shutil.get_terminal_size(fallback=(80, 24)).columns
+
 
 dotenv.load_dotenv(dotenv_path=pathlib.Path("my_agent/.env"))
 
@@ -46,14 +53,15 @@ ATTACHMENTS_FOLDER_PATH = "benchmark/attachments"
 def print_banner():
     """Print the ML6 banner."""
     banner = pyfiglet.figlet_format("ML6", font="slant")
+    width = _term_width()
     # Orange color using ANSI 256-color code
     orange = "\033[38;5;208m"
     print(f"\n{orange}{Style.BRIGHT}{banner}{Style.RESET_ALL}")
-    print(f"{orange}{'=' * 80}{Style.RESET_ALL}")
+    print(f"{orange}{'=' * width}{Style.RESET_ALL}")
     print(
         f"{orange}{Style.BRIGHT}AISO Workshop - Agent Evaluation System{Style.RESET_ALL}"
     )
-    print(f"{orange}{'=' * 80}{Style.RESET_ALL}\n")
+    print(f"{orange}{'=' * width}{Style.RESET_ALL}\n")
 
 
 def _load_dataset():
@@ -158,9 +166,10 @@ def evaluate_single_question(question_data: dict, question_idx: int) -> dict:
         if files:
             file_paths = [f"{ATTACHMENTS_FOLDER_PATH}/{f}" for f in files]
 
-    print(f"\n{Fore.CYAN}{'=' * 80}")
+    width = _term_width()
+    print(f"\n{Fore.CYAN}{'=' * width}")
     print(f"{Fore.CYAN}{Style.BRIGHT}Question {question_idx + 1}")
-    print(f"{Fore.CYAN}{'=' * 80}{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}{'=' * width}{Style.RESET_ALL}")
     question_display = f"{question[:100]}..." if len(question) > 100 else question
     print(f"{Fore.BLUE}{Style.BRIGHT}Question:{Style.RESET_ALL} {question_display}")
     if file_paths:
@@ -263,7 +272,7 @@ def evaluate_all(dataset_path=None, output_file=None) -> dict:
     print(
         f"{Fore.CYAN}{Style.BRIGHT}Starting evaluation of {total_count} questions...{Style.RESET_ALL}"
     )
-    print(f"{Fore.CYAN}{'=' * 80}{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}{'=' * _term_width()}{Style.RESET_ALL}")
 
     for idx, question_data in enumerate(dataset):
         result = evaluate_single_question(question_data, idx)
@@ -304,9 +313,10 @@ def evaluate_all(dataset_path=None, output_file=None) -> dict:
     }
 
     # Print summary
-    print(f"\n{Fore.CYAN}{Style.BRIGHT}{'=' * 80}")
+    width = _term_width()
+    print(f"\n{Fore.CYAN}{Style.BRIGHT}{'=' * width}")
     print("EVALUATION SUMMARY")
-    print(f"{'=' * 80}{Style.RESET_ALL}")
+    print(f"{'=' * width}{Style.RESET_ALL}")
     print(f"\n{Fore.WHITE}{Style.BRIGHT}Correctness Metrics:{Style.RESET_ALL}")
     print(f"{Fore.WHITE}Total Questions:{Style.RESET_ALL} {total_count}")
     print(f"{Fore.GREEN}Correct:{Style.RESET_ALL} {correct_count}")
@@ -319,7 +329,7 @@ def evaluate_all(dataset_path=None, output_file=None) -> dict:
     print(
         f"{Fore.GREEN}Average Response Time (Correct Only):{Style.RESET_ALL} {avg_correct_response_time:.2f}s"
     )
-    print(f"{Fore.CYAN}{'=' * 80}{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}{'=' * _term_width()}{Style.RESET_ALL}")
 
     # Save results to file
     if output_file is None:
