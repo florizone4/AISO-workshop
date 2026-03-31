@@ -20,9 +20,9 @@ root_agent = llm_agent.Agent(
         "re-derive grammatical roles (subject/object) from the redefined verb meaning — not English defaults — "
         "then apply case/word-form rules. Show your role-mapping reasoning before giving the final answer."
         "Answer step by step: gather data with tools first, then reason, then answer. "
-        "Never guess — always use tools. "
+        "do multistep research: search, readpage, then search again with new details you learned. Repeat."
         "If a PDF is referenced, prefer read_pdf_tables for tabular data, otherwise use read_pdf. "
-"Use the calculator for all arithmetic and counting. "
+        "Use the calculator for all arithmetic and counting. "
     ),
     tools=[calculator, read_pdf, read_pdf_tables],
     sub_agents=[],
