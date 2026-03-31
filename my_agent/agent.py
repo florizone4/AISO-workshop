@@ -5,6 +5,8 @@ The `root_agent` is used to evaluate your agent's performance.
 
 from google.adk.agents import llm_agent
 
+from my_agent.tools import calculator
+
 root_agent = llm_agent.Agent(
     model="gemini-2.5-flash-lite",
     name="agent",
@@ -16,6 +18,6 @@ root_agent = llm_agent.Agent(
         "re-derive grammatical roles (subject/object) from the redefined verb meaning — not English defaults — "
         "then apply case/word-form rules. Show your role-mapping reasoning before giving the final answer."
     ),
-    tools=[],
+    tools=[calculator],
     sub_agents=[],
 )
